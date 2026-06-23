@@ -1,4 +1,5 @@
 """1.3 动手体验:从零实现一个智能体"""
+
 from tavily.tavily import TavilyClient
 
 import requests
@@ -10,7 +11,7 @@ AGENT_SYSTEM_PROMPT = """
 
 # 可用工具
 - `get_weather(city: str)`: 查询指定城市天气
-- `get_attraction(city: str , weather: str)` : 根据城市和天气推荐景点 
+- `get_attraction(city: str , weather: str)` : 根据城市和天气推荐景点
 
 # 输出格式
 你的输出每次必须严格按照一下格式，包含一对Thought和ACTION
@@ -53,11 +54,11 @@ def get_weather(city: str) -> str:
         )
 
 
-def get_attraction(city: str , weather: str) -> str:
+def get_attraction(city: str, weather: str) -> str:
     api_key = Config.TAVILY_API_KEY
     if not api_key:
-        return f"TAVILY_API_KEY is not set"
-    try : 
+        return "TAVILY_API_KEY is not set"
+    try:
         tavily = TavilyClient(api_key=api_key)
         r = tavily.search(f"{city}在{weather}天气下最值得去的景点推荐和介绍")
         if r.get("answer"):
@@ -66,10 +67,10 @@ def get_attraction(city: str , weather: str) -> str:
         # If answer is None , format result manual
         formate_list = []
         for result in r["results"]:
-            formate_list.append(f"- {result["title"]}:{result["content"]}")
+            formate_list.append(f"- {result['title']}:{result['content']}")
         if not formate_list:
             return "抱歉没有找到推荐的景点"
-        return  "根据搜索，为您找到以下信息:\n" + "\n".join(formate_list)
+        return "根据搜索，为您找到以下信息:\n" + "\n".join(formate_list)
 
     except Exception as e:
         return f"Error calling tavily server! -{e}"
